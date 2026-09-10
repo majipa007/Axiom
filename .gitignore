@@ -1,3 +1,6 @@
 .ipynb_checkpoints
 .env 
 .obisidian
+__pycache__
+.local
+*.log
