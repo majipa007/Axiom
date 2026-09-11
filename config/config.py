@@ -16,3 +16,6 @@ class Config:
     tokenizer_file_name: str = "tinystories_tokenizer.model"
     tokenizer_local_dir: Path = local_dir / "tokenizer"
     tokenizer_file_dir: Path = tokenizer_local_dir / tokenizer_file_name
+    token_dir: Path = local_dir / "tokens/data"
+    token_train_dir: Path = token_dir / "train.bin"
+    token_val_dir: Path = token_dir / "validation.bin"

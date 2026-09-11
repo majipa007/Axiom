@@ -4,8 +4,8 @@ import sentencepiece as smp
 import json
 from config.config import Config
 from src.training.dataset import download_and_store
+from src.training.tokenize import tokenize_data
 from config.logging_config import setup_logging
-from src.training.token import tokenizer_download
 
 cnf = Config()
 logger = logging.getLogger(__name__)
@@ -30,11 +30,7 @@ def main():
     # ======================= Tokenizer loading =======================
     try:
         logger.info("loading the tokenizer")
-        if not cnf.tokenizer_file_dir.exists():
-            logger.debug("tokenizer not found, downloading tokenizer")
-            tokenizer_download()
-        tokenizer = smp.SentencePieceProcessor(model_file=str(cnf.tokenizer_file_dir))
-        tokens = tokenizer.encode(str(dataset["train"][0]))
+        tokenize_data(dataset)
     except Exception as exe:
         logger.error(f"error loading the tokentizer: {exe}")
         return
