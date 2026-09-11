@@ -29,5 +29,5 @@ def load_data() -> dict:
             logger.debug("reading the data")
             dataset: dict = json.load(f)
             return dataset
-    except Exception:
-        raise data_loading_error
+    except Exception as exe:
+        raise data_loading_error("Failed to load data") from exe

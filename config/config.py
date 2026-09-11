@@ -19,3 +19,7 @@ class Config:
     token_dir: Path = local_dir / "tokens/data"
     token_train_dir: Path = token_dir / "train.bin"
     token_val_dir: Path = token_dir / "validation.bin"
+
+    # training params
+    context_length: int = 100
+    batch_size: int = 100
