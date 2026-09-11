@@ -1,9 +1,7 @@
 import logging
-from typing import Dict
-import sentencepiece as smp
-import json
 from config.config import Config
-from src.training.dataset import download_and_store
+from src.errors import data_loading_error, tokenization_error
+from src.training.dataset import load_data
 from src.training.tokenize import tokenize_data
 from config.logging_config import setup_logging
 
@@ -14,26 +12,26 @@ logger = logging.getLogger(__name__)
 def main():
     # ======================= Data set Loading =======================
     try:
-        logger.info("loading the dataset")
-        if not cnf.dataset_file.exists():
-            logger.debug("dataset not found, downloading and storing the data...")
-            download_and_store()
-            logger.debug("downloaded and stored the data")
-        with open(cnf.dataset_file) as f:
-            logger.debug("reading the data")
-            dataset: Dict = json.load(f)
-        logger.info("completed reading the data")
-    except Exception as exe:
-        logger.error(f"error loading dataset: {exe}")
-        return
+        logger.info("dataset loading")
+        dataset: dict = load_data()
+        logger.info("dataset loading completed")
 
-    # ======================= Tokenizer loading =======================
-    try:
-        logger.info("loading the tokenizer")
+        # ======================= Tokenizer loading =======================
+        logger.info("tokenization")
         tokenize_data(dataset)
+        logger.info("tokenization completed")
+
+    except data_loading_error as exe:
+        logger.error(f"error while loading the dataset: {exe}")
+        raise
+
+    except tokenization_error as exe:
+        logger.error(f"error while loading the dataset: {exe}")
+        raise
+
     except Exception as exe:
-        logger.error(f"error loading the tokentizer: {exe}")
-        return
+        logger.error(f"Unknown error in the pipeline: {exe}")
+        raise
 
 
 if __name__ == "__main__":
