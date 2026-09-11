@@ -20,7 +20,7 @@ def tokenizer_download():
 
 
 def tokenize_data(dataset: dict) -> None:
-    if not cnf.token_dir.exists():
+    if not cnf.token_train_dir.exists():
         logger.info("no tokens found for training so starting to tokenize")
         if not cnf.tokenizer_file_dir.exists():
             tokenizer_download()
@@ -49,19 +49,16 @@ def tokenize_split(
 ) -> None:
     logger.debug("Saving tokens in the file.")
     all_tokens = []
-    for sample in dataset:
-        text = sample["text"]
+    with open(output_file, "wb") as f:
+        for sample in dataset:
+            text = sample["text"]
 
-        tokens = tokenizer.encode(text)
+            tokens = tokenizer.encode(text)
 
-        all_tokens.extend(tokens)
+            tokens.append(tokenizer.eos_id())
 
-        all_tokens.append(tokenizer.eos_id())
-
-    tokens_array = np.array(all_tokens, dtype=np.uint16)
-    tokens_array.tofile(output_file)
+            np.asarray(tokens, dtype=np.uint16).tofile(f)
     logger.debug(
-        "saved %d tokens to %s",
-        len(tokens_array),
+        "saved tokens to %s",
         output_file,
     )
