@@ -12,3 +12,7 @@ class Config:
 
     # Data
     dataset: str = "roneneldan/TinyStories"
+    tokenizer_repo_id: str = "lakhera2023/gemma4-nano-tinystories"
+    tokenizer_file_name: str = "tinystories_tokenizer.model"
+    tokenizer_local_dir: Path = local_dir / "tokenizer"
+    tokenizer_file_dir: Path = tokenizer_local_dir / tokenizer_file_name
