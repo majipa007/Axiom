@@ -2,6 +2,7 @@ from random import randint
 import numpy as np
 from config.config import Config
 from src.errors import batching_error
+import torch
 
 cnf = Config()
 
@@ -21,6 +22,9 @@ def batch_data(context_length: int, batch_size: int) -> dict:
             start = randint(0, len(data) - context_length - 1)
             x.append(data[start : start + context_length])
             y.append(data[start + 1 : start + context_length + 1])
-        return {"x": np.stack(x), "y": np.stack(y)}
+        X = torch.from_numpy(np.stack(x)).long()
+        Y = torch.from_numpy(np.stack(y)).long()
+
+        return {"x": X, "y": Y}
     except Exception as exe:
         raise batching_error("Failed to create batch") from exe

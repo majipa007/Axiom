@@ -55,7 +55,6 @@ def tokenize_split(
     output_file: str,
 ) -> None:
     logger.debug("Saving tokens in the file.")
-    all_tokens = []
     with open(output_file, "wb") as f:
         for sample in dataset:
             text = sample["text"]
@@ -69,3 +68,32 @@ def tokenize_split(
         "saved tokens to %s",
         output_file,
     )
+
+def tokenize_split(
+    dataset: list,
+    tokenizer: spm.SentencePieceProcessor,
+    output_file: str,
+) -> None:
+    logger.debug("Saving tokens in the file.")
+    with open(output_file, "wb") as f:
+        for sample in dataset:
+            text = sample["text"]
+
+            tokens = tokenizer.encode(text)
+
+            tokens.append(tokenizer.eos_id())
+
+            np.asarray(tokens, dtype=np.uint16).tofile(f)
+    logger.debug(
+        "saved tokens to %s",
+        output_file,
+    )
+
+def detokenize(
+    tokens: list,
+)-> str:
+    tokenizer = spm.SentencePieceProcessor(
+        model_file=str(cnf.tokenizer_file_dir)
+    )
+    sentence = tokenizer.decode(tokens)
+    return sentence 

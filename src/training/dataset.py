@@ -3,7 +3,7 @@ from pathlib import Path
 from datasets import load_dataset
 import logging
 from config.config import Config
-from errors import data_loading_error
+from src.errors import data_loading_error
 
 cnf = Config()
 
@@ -25,9 +25,12 @@ def load_data() -> dict:
             logger.debug("dataset not found, downloading and storing the data...")
             download_and_store()
             logger.debug("downloaded and stored the data")
-        with open(cnf.dataset_file) as f:
-            logger.debug("reading the data")
-            dataset: dict = json.load(f)
-            return dataset
+        if not cnf.token_train_dir.exists():
+            logger.info("no tokens found for training so loading the dataset")
+            with open(cnf.dataset_file) as f:
+                logger.debug("reading the data")
+                dataset: dict = json.load(f)
+                return dataset
+        return None
     except Exception as exe:
         raise data_loading_error("Failed to load data") from exe
