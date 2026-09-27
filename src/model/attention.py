@@ -85,3 +85,19 @@ class SingleHeadAttention(nn.Module):
 
         return output
 
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self,
+                 d_model: int, # dimention of the model 
+                 n_heads: int, # no of single head attention
+                 context_length: int, # max length 
+                 ) -> None:
+        super().__init__()
+
+        # 1. make the d_model divisible by n_heads 
+
+        # 2. calculate the head_size ( head_size = d_model // n_heads )
+
+        # 3. create n_heads SingleHeadAttention modules using nn.ModuleList
+        
+        # 4. create the output projection -> Linear(c, c)
