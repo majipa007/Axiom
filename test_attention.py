@@ -1,6 +1,6 @@
 import torch
 
-from src.model.attention import SingleHeadAttention
+from src.model.attention import SingleHeadAttention, MultiHeadAttention
 
 
 torch.manual_seed(42)
@@ -55,3 +55,25 @@ for name, parameter in attention.named_parameters():
     print(f"{name}: gradient OK")
 
 print("Single-head attention passed all checks")
+
+mha = MultiHeadAttention(
+    d_model=256,
+    n_heads=4,
+    context_length=128,
+)
+
+x = torch.randn(2, 4, 256)
+
+output = mha(x)
+
+print("Input shape:", x.shape)
+print("Output shape:", output.shape)
+
+loss = output.sum()
+loss.backward()
+
+for name, param in mha.named_parameters():
+    if param.grad is None:
+        print(name, "❌ NO GRADIENT")
+    else:
+        print(name, "✅ gradient OK")

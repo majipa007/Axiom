@@ -94,10 +94,39 @@ class MultiHeadAttention(nn.Module):
                  ) -> None:
         super().__init__()
 
-        # 1. make the d_model divisible by n_heads 
+        # 1. make the d_model divisible by n_heads
+        if d_model%n_heads!=0:
+            raise ValueError(
+                f"d_model : {d_model} is not divisible by n_heads {n_heads}"
+            )
 
         # 2. calculate the head_size ( head_size = d_model // n_heads )
+        self.head_size = d_model//n_heads
 
         # 3. create n_heads SingleHeadAttention modules using nn.ModuleList
+        # using a module list because pytorch registers all those attention heads as parts of your model 
+        
+        self.heads = nn.ModuleList(
+            SingleHeadAttention(
+                d_model=d_model,
+                head_size=self.head_size,
+                context_length=context_length
+            )
+            for _ in range(n_heads)
+        )
         
         # 4. create the output projection -> Linear(c, c)
+        self.output_projection = nn.Linear(
+            in_features=d_model,
+            out_features=d_model,
+            bias=False
+        )
+
+    def forward(self, x: torch.Tensor)->torch.Tensor:
+        results = []
+        for head in self.heads:
+            result = head(x)
+            results.append(result)
+        concatinated_result = torch.cat(results, dim = -1)
+        output = self.output_projection(concatinated_result)
+        return output 
