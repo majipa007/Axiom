@@ -21,6 +21,9 @@ class Axiom(nn.Module):
         # [T, C]
         self.position_embedding = nn.Embedding(context_length, d_model)
 
+        # [C, V]
+        self.lm_head = nn.Linear(d_model, vocab_size)
+
         self.blocks = nn.ModuleList(
             TransformerBlock(
                 d_model=d_model,
@@ -29,7 +32,7 @@ class Axiom(nn.Module):
             )
             for _ in range(n_blocks)
         )
-        self.final_norm = # fonal norm to be added 
+        self.final_norm = nn.LayerNorm(d_model) 
 
     def forward(self, x:torch.Tensor)->torch.Tensor:
         token_embeddings = self.token_embedding(x)
@@ -38,5 +41,7 @@ class Axiom(nn.Module):
         x = token_embeddings+position_embedding
         for block in self.blocks:
             x = block(x)
+        x = self.final_norm(x)
+        x = self.lm_head(x)
         return x
         
