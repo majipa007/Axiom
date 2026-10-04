@@ -24,7 +24,6 @@ def batch_data(context_length: int, batch_size: int) -> dict:
             y.append(data[start + 1 : start + context_length + 1])
         X = torch.from_numpy(np.stack(x)).long()
         Y = torch.from_numpy(np.stack(y)).long()
-
         return {"x": X, "y": Y}
     except Exception as exe:
         raise batching_error("Failed to create batch") from exe

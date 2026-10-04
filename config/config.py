@@ -21,5 +21,10 @@ class Config:
     token_val_dir: Path = token_dir / "validation.bin"
 
     # training params
-    context_length: int = 100
-    batch_size: int = 100
+    batch_size: int = 8 
+    vocab_size: int = 8000  # V no of items in the vocab
+    context_length: int = 128  # T in BTC this is the time dimension
+    d_model: int = 256  # C, how many dimensions each token will have
+    n_heads: int =  4 # No of attention heads
+    n_blocks: int = 4 # No of TransformerBlocks
+
