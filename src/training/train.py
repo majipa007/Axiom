@@ -67,3 +67,4 @@ class Trainer():
                     f"Train Loss: {train_loss:.4f} | "
                     f"Val Loss: {val_loss:.4f}"
                 )
+
